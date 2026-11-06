@@ -12,3 +12,5 @@ frontend/.next/
 frontend/.env*.local
 .DS_Store
 backend/logs/
+# claude code (personal settings)
+.claude/settings.local.json
