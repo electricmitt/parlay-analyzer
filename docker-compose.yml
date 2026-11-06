@@ -1,0 +1,29 @@
+# Single-host deployment: Postgres + API + scheduler worker + dashboard.
+services:
+  db:
+    image: postgres:16-alpine
+    environment: { POSTGRES_USER: courtside, POSTGRES_PASSWORD: courtside, POSTGRES_DB: courtside }
+    volumes: [pgdata:/var/lib/postgresql/data]
+  api:
+    build: ./backend
+    env_file: ./backend/.env
+    environment: { DATABASE_URL: "postgresql+psycopg://courtside:courtside@db:5432/courtside" }
+    ports: ["8000:8000"]
+    depends_on: [db]
+  worker:
+    build: ./backend
+    env_file: ./backend/.env
+    environment: { DATABASE_URL: "postgresql+psycopg://courtside:courtside@db:5432/courtside" }
+    command: ["sh", "-c", "courtside migrate && courtside worker"]
+    depends_on: [db]
+    restart: unless-stopped
+  web:
+    image: node:20-alpine
+    working_dir: /app
+    volumes: ["./frontend:/app"]
+    environment: { NEXT_PUBLIC_API_URL: "http://localhost:8000" }
+    command: ["sh", "-c", "npm ci && npm run build && npm start"]
+    ports: ["3000:3000"]
+    depends_on: [api]
+volumes:
+  pgdata:

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Runs the Courtside scheduler (daily analysis + Telegram digests) whenever you're logged in.
+     Install:   cp deploy/com.courtside.worker.plist ~/Library/LaunchAgents/ && launchctl load ~/Library/LaunchAgents/com.courtside.worker.plist
+     Uninstall: launchctl unload ~/Library/LaunchAgents/com.courtside.worker.plist && rm ~/Library/LaunchAgents/com.courtside.worker.plist -->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.courtside.worker</string>
+  <key>WorkingDirectory</key><string>/Users/matthewallen/parlay-analyzer/backend</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/matthewallen/parlay-analyzer/backend/.venv/bin/courtside</string>
+    <string>worker</string>
+  </array>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardOutPath</key><string>/Users/matthewallen/parlay-analyzer/backend/logs/worker.log</string>
+  <key>StandardErrorPath</key><string>/Users/matthewallen/parlay-analyzer/backend/logs/worker.log</string>
+</dict>
+</plist>

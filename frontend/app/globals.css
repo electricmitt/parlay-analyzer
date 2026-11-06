@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+  --page: #080a0f;
+  --page-2: #0e1118;
+  --elevated: #141923;
+  --surface: #11151d;
+  --ink: #f5f7fa;
+  --ink-2: #929baa;
+  --muted: #626d7d;
+  --grid: #1b212b;
+  --axis: #242b36;
+  --border: #242b36;
+  --series-1: #3b82f6;
+  --cyan: #22d3ee;
+  --good: #10b981;
+  --good-text: #34d399;
+  --warning: #fbbf24;
+  --serious: #fb923c;
+  --critical: #f87171;
+  --neutral: #1b212b;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@theme inline {
+  --color-page: var(--page);
+  --color-page-2: var(--page-2);
+  --color-elevated: var(--elevated);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-grid: var(--grid);
+  --color-line: var(--border);
+  --color-series-1: var(--series-1);
+  --color-cyan: var(--cyan);
+  --color-good: var(--good);
+  --color-good-text: var(--good-text);
+  --color-warning: var(--warning);
+  --color-serious: var(--serious);
+  --color-critical: var(--critical);
+  --color-neutral: var(--neutral);
+  --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+body {
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+}
+
+.tnum, .num { font-variant-numeric: tabular-nums; }
+.num { font-family: var(--font-mono); letter-spacing: -0.01em; }
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; border-radius: 4px; }
+
+input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7); }
+select, input { color-scheme: dark; }
+
+/* Scrollbars stay out of the way of the data. */
+* { scrollbar-width: thin; scrollbar-color: var(--axis) transparent; }
+
+/* Hover lift with a hairline gradient border, used on interactive and metric surfaces. */
+.lift {
+  position: relative;
+  transition: transform 180ms var(--ease), background-color 180ms var(--ease), border-color 180ms var(--ease);
+}
+.lift:hover { transform: translateY(-1px); background-color: var(--elevated); }
+.lift::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgb(59 130 246 / 0.55), rgb(34 211 238 / 0.15) 45%, transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms var(--ease);
+}
+.lift:hover::before { opacity: 1; }
+
+.fade-in { animation: fade-in 260ms var(--ease) both; }
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+.pulse-dot { animation: pulse-dot 2.4s ease-in-out infinite; }
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 45%, transparent); }
+  50% { box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 0%, transparent); }
+}
+
+/* Indeterminate activity: used while a run is in progress, because no real percentage exists. */
+.scan { position: relative; overflow: hidden; background: var(--neutral); }
+.scan::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 35%;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  animation: scan 1.3s var(--ease) infinite;
+}
+@keyframes scan { from { transform: translateX(-100%); } to { transform: translateX(300%); } }
+
+.skeleton {
+  background: linear-gradient(90deg, var(--neutral), var(--elevated), var(--neutral));
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+  border-radius: 6px;
+}
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .lift:hover { transform: none; }
+}
